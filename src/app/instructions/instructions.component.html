@@ -1,0 +1,94 @@
+<div class="instructions-container">
+  <div class="instructions-header" (click)="toggleCollapse()">
+    <h2>Instructions</h2>
+    <button class="collapse-btn" [class.collapsed]="isCollapsed">
+      {{ isCollapsed ? '▼' : '▲' }}
+    </button>
+  </div>
+
+  <div class="instructions-content" [class.collapsed]="isCollapsed">
+    <div class="section">
+      <h3>How to Create a Schedule</h3>
+      <p>Use the Schedule Builder to create recurring schedules with the following fields:</p>
+      
+      <div class="field-info">
+        <h4>Minute (0-59)</h4>
+        <p>Specify which minutes the schedule should run. Use comma-separated values or * for every minute.</p>
+        <p><strong>Examples:</strong> <code>0</code> (at minute 0), <code>0,15,30,45</code> (every 15 minutes), <code>*</code> (every minute)</p>
+      </div>
+
+      <div class="field-info">
+        <h4>Hour (0-23)</h4>
+        <p>Specify which hours the schedule should run. Use comma-separated values or * for every hour.</p>
+        <p><strong>Examples:</strong> <code>9</code> (at 9 AM), <code>9,17</code> (at 9 AM and 5 PM), <code>*</code> (every hour)</p>
+      </div>
+
+      <div class="field-info">
+        <h4>Day of Month (1-31)</h4>
+        <p>Specify which days of the month the schedule should run. Use comma-separated values or * for every day.</p>
+        <p><strong>Examples:</strong> <code>1</code> (1st of month), <code>1,15,31</code> (1st, 15th, and 31st), <code>*</code> (every day)</p>
+      </div>
+
+      <div class="field-info">
+        <h4>Month (1-12)</h4>
+        <p>Specify which months the schedule should run. Use comma-separated values or * for every month.</p>
+        <p><strong>Examples:</strong> <code>1</code> (January), <code>1,6,12</code> (January, June, December), <code>*</code> (every month)</p>
+      </div>
+
+      <div class="field-info">
+        <h4>Day of Week (0-6)</h4>
+        <p>Specify which days of the week the schedule should run. Sunday = 0, Monday = 1, etc. Use comma-separated values or * for every day.</p>
+        <p><strong>Examples:</strong> <code>1</code> (Mondays), <code>1,5</code> (Mondays and Fridays), <code>*</code> (every day)</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>How the Validator Works</h3>
+      <p>The Schedule Validator allows you to test cron expressions and get instant feedback:</p>
+      
+      <ul>
+        <li><strong>Input:</strong> Enter a cron expression in the format: <code>minute hour day month weekday</code></li>
+        <li><strong>Validation:</strong> The system checks if the expression is properly formatted and within valid ranges</li>
+        <li><strong>Results:</strong> Get immediate feedback with ✅ for valid expressions or ❌ for invalid ones</li>
+        <li><strong>Description:</strong> Valid expressions show a human-readable description of when the schedule will run</li>
+        <li><strong>Errors:</strong> Invalid expressions show specific error messages to help you fix issues</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>Accepted Input Formats</h3>
+      <p>The application supports the following input formats:</p>
+      
+      <div class="format-examples">
+        <h4>Basic Examples:</h4>
+        <ul>
+          <li><code>0,15,30,45 * * * *</code> - Every 15 minutes</li>
+          <li><code>0 9,17 * * 1,5</code> - At 9 AM and 5 PM on Mondays and Fridays</li>
+          <li><code>30 12 1,15 * *</code> - At 12:30 PM on the 1st and 15th of each month</li>
+          <li><code>0 0 1 1,7 *</code> - At midnight on January 1st and July 1st</li>
+          <li><code>* * * * *</code> - Every minute of every hour, every day</li>
+        </ul>
+
+        <h4>Rules:</h4>
+        <ul>
+          <li>Use comma (,) to separate multiple values</li>
+          <li>Use * for "every" value</li>
+          <li>Each field must be within its valid range</li>
+          <li>All 5 fields are required</li>
+          <li>Fields must be separated by spaces</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Tips for Best Results</h3>
+      <ul>
+        <li>Start with simple schedules and gradually add complexity</li>
+        <li>Use the preview feature to see when your schedule will actually run</li>
+        <li>Be aware that specifying both Day of Month and Day of Week may cause conflicts</li>
+        <li>Test your expressions in the Validator before using them</li>
+        <li>Export your schedules for backup and sharing</li>
+      </ul>
+    </div>
+  </div>
+</div>

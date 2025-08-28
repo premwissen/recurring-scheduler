@@ -1,0 +1,158 @@
+.instructions-container {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.instructions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #e9ecef;
+  }
+
+  h2 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .collapse-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #dee2e6;
+      color: #333;
+    }
+
+    &.collapsed {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.instructions-content {
+  padding: 20px;
+  transition: all 0.3s ease;
+
+  &.collapsed {
+    max-height: 0;
+    padding: 0 20px;
+    overflow: hidden;
+  }
+
+  .section {
+    margin-bottom: 30px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 20px;
+      font-weight: 600;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 8px;
+    }
+
+    p {
+      margin: 0 0 15px 0;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    ul {
+      margin: 0 0 15px 0;
+      padding-left: 20px;
+
+      li {
+        margin-bottom: 8px;
+        color: #333;
+        line-height: 1.5;
+      }
+    }
+
+    .field-info {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+
+      h4 {
+        margin: 0 0 10px 0;
+        color: #495057;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        strong {
+          color: #333;
+        }
+
+        code {
+          background: #e9ecef;
+          padding: 2px 6px;
+          border-radius: 3px;
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
+          color: #495057;
+        }
+      }
+    }
+
+    .format-examples {
+      h4 {
+        margin: 15px 0 10px 0;
+        color: #495057;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      ul {
+        margin-bottom: 20px;
+
+        li {
+          margin-bottom: 10px;
+
+          code {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #495057;
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+  }
+}``

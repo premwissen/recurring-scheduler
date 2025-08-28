@@ -1,0 +1,135 @@
+<div class="scheduler-container">
+  <h2>Schedule Builder</h2>
+  
+  <form [formGroup]="scheduleForm" class="schedule-form">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="minute">Minute</label>
+        <input 
+          id="minute" 
+          type="text" 
+          formControlName="minute" 
+          placeholder="0,15,30,45 or *"
+          class="form-input"
+        >
+        <small>Range: 0-59, use comma to separate multiple values</small>
+      </div>
+      
+      <div class="form-field">
+        <label for="hour">Hour</label>
+        <input 
+          id="hour" 
+          type="text" 
+          formControlName="hour" 
+          placeholder="9,12,18 or *"
+          class="form-input"
+        >
+        <small>Range: 0-23, use comma to separate multiple values</small>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="dayOfMonth">Day of Month</label>
+        <input 
+          id="dayOfMonth" 
+          type="text" 
+          formControlName="dayOfMonth" 
+          placeholder="1,15,31 or *"
+          class="form-input"
+        >
+        <small>Range: 1-31, use comma to separate multiple values</small>
+      </div>
+      
+      <div class="form-field">
+        <label for="month">Month</label>
+        <input 
+          id="month" 
+          type="text" 
+          formControlName="month" 
+          placeholder="1,6,12 or *"
+          class="form-input"
+        >
+        <small>Range: 1-12, use comma to separate multiple values</small>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="dayOfWeek">Day of Week</label>
+        <input 
+          id="dayOfWeek" 
+          type="text" 
+          formControlName="dayOfWeek" 
+          placeholder="1,5 or *"
+          class="form-input"
+        >
+        <small>Range: 0-6 (Sunday=0), use comma to separate multiple values</small>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="resetForm()" class="btn btn-secondary">Reset</button>
+      <button type="button" (click)="exportSchedule()" class="btn btn-primary">Export</button>
+      <label for="import-file" class="btn btn-primary">Import</label>
+      <input 
+        id="import-file" 
+        type="file" 
+        accept=".json" 
+        (change)="importSchedule($event)" 
+        style="display: none;"
+      >
+    </div>
+  </form>
+
+  <!-- Validation Results -->
+  <div class="validation-section" *ngIf="validationResult">
+    <div class="validation-status" [class.valid]="validationResult.isValid" [class.invalid]="!validationResult.isValid">
+      <span class="status-icon">{{ validationResult.isValid ? '✅' : '❌' }}</span>
+      <span class="status-text">
+        {{ validationResult.isValid ? 'Schedule is valid' : 'Schedule has errors' }}
+      </span>
+    </div>
+
+    <div class="validation-errors" *ngIf="validationResult.errors.length > 0">
+      <h4>Errors:</h4>
+      <ul>
+        <li *ngFor="let error of validationResult.errors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <div class="validation-warnings" *ngIf="validationResult.warnings.length > 0">
+      <h4>Warnings:</h4>
+      <ul>
+        <li *ngFor="let warning of validationResult.warnings">{{ warning }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Cron Expression -->
+  <div class="cron-expression" *ngIf="cronExpression">
+    <h4>Generated Cron Expression:</h4>
+    <code class="cron-code">{{ cronExpression }}</code>
+  </div>
+
+  <!-- Schedule Preview -->
+  <div class="preview-section" *ngIf="previews.length > 0">
+    <h4>Upcoming Run Times:</h4>
+    <table class="preview-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Next Run</th>
+          <th>Expression</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let preview of previews; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ preview.nextRun | date:'medium' }}</td>
+          <td><code>{{ preview.expression }}</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
