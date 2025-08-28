@@ -1,59 +1,65 @@
-# RecurringScheduler
+# Recurring Scheduler — Interview Assignment
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.6.
+Some pieces are intentionally incomplete with TODOs and inline instructions. Complete the TODOs and make tests pass.
 
-## Development server
+Estimated time: 90–120 minutes.
 
-To start a local development server, run:
+## Getting Started
+
+1. Install dependencies:
 
 ```bash
+npm install
+```
+
+2. Run the app:
+
+```bash
+npm start
+# or
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open `http://localhost:4200/` in your browser.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+3. Run the unit tests:
 
 ```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
+npm test
+# or
 ng test
 ```
 
-## Running end-to-end tests
+Tests print short hints while you build. As you complete TODOs, hints disappear and assertions pass.
 
-For end-to-end (e2e) testing, run:
+## What You Need To Implement
 
-```bash
-ng e2e
-```
+Read the inline TODOs and the “Interview Task” banners in the UI pages. Do these:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Service logic (in `src/app/services/schedule.service.ts`):
+  - Implement `parseCronExpression` (5 fields → `Schedule | null`).
+  - Implement `getHumanReadableDescription` (compose readable phrases).
+  - Implement `normalizeSchedule` (split/trim/parse/dedupe/sort/clamp).
 
-## Additional Resources
+- Validator (in `src/app/validator/validator.component.*`):
+  - Build a Reactive Form with a single control `cronExpression` (required + pattern to allow digits, spaces, commas, `*`).
+  - Implement `updateStateFromExpression(expression: string)` to parse → validate → describe, and set component state accordingly.
+  - Show/hide sections based on validity (use provided data-test hooks). Enable the Validate button only when the form is valid.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Scheduler (in `src/app/scheduler/scheduler.component.*`):
+  - Build a Reactive Form with controls: `minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek` (required + pattern/ranges).
+  - In `validateAndPreview`, call `normalizeSchedule` then `validateSchedule`; when valid, display cron string and description.
+  - Implement `resetForm()` to set all fields to `*` and clear outputs. Enable the Submit button only when the form is valid.
+
+
+## Tips
+
+- Keep component methods small. Heavy logic should go in helpers or services (see `updateStateFromExpression` in the Validator).
+- Use the provided data-test attributes to verify visibility and behavior.
+- Use the existing tests as a guide; they are written to help you converge on the expected behavior.
+
+## Scripts
+
+- Start dev server: `npm start`
+- Run tests: `npm test`
+- Build: `npm run build` or `ng build`

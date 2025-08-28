@@ -17,6 +17,7 @@ import { InstructionsComponent } from './instructions/instructions.component';
           <app-validator></app-validator>
         </div>
         
+        <!-- No changes here -->
         <div class="right-column">
           <app-instructions></app-instructions>
         </div>

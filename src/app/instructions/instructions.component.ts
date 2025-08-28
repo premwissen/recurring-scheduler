@@ -8,10 +8,4 @@ import { CommonModule } from '@angular/common';
   templateUrl: './instructions.component.html',
   styleUrls: ['./instructions.component.scss']
 })
-export class InstructionsComponent {
-  isCollapsed: boolean = false;
-
-  toggleCollapse(): void {
-    this.isCollapsed = !this.isCollapsed;
-  }
-}
+export class InstructionsComponent {}

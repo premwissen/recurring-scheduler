@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Schedule, ScheduleValidationResult, SchedulePreview, SCHEDULE_FIELDS } from '../models/schedule.model';
+import { Schedule, ScheduleValidationResult, SCHEDULE_FIELDS } from '../models/schedule.model';
 
 @Injectable({
   providedIn: 'root'
@@ -47,127 +47,61 @@ export class ScheduleService {
     };
   }
 
-  generatePreview(schedule: Schedule, count: number = 5): SchedulePreview[] {
-    const validation = this.validateSchedule(schedule);
-    if (!validation.isValid) {
-      return [];
-    }
 
-    const previews: SchedulePreview[] = [];
-    let currentDate = new Date();
-    currentDate.setSeconds(0, 0); // Reset seconds and milliseconds
 
-    for (let i = 0; i < count; i++) {
-      const nextRun = this.findNextRun(schedule, currentDate);
-      if (nextRun) {
-        previews.push({
-          nextRun,
-          expression: this.formatCronExpression(schedule)
-        });
-        currentDate = new Date(nextRun.getTime() + 60000); // Move to next minute
-      }
-    }
-
-    return previews;
-  }
-
-  private findNextRun(schedule: Schedule, fromDate: Date): Date | null {
-    let currentDate = new Date(fromDate);
-    let attempts = 0;
-    const maxAttempts = 1000; // Prevent infinite loops
-
-    while (attempts < maxAttempts) {
-      if (this.matchesSchedule(schedule, currentDate)) {
-        return currentDate;
-      }
-      currentDate = new Date(currentDate.getTime() + 60000); // Add 1 minute
-      attempts++;
-    }
-
-    return null;
-  }
-
-  private matchesSchedule(schedule: Schedule, date: Date): boolean {
-    const minute = date.getMinutes();
-    const hour = date.getHours();
-    const dayOfMonth = date.getDate();
-    const month = date.getMonth() + 1; // getMonth() returns 0-11
-    const dayOfWeek = date.getDay();
-
-    return this.fieldMatches(schedule.minute, minute) &&
-           this.fieldMatches(schedule.hour, hour) &&
-           this.fieldMatches(schedule.dayOfMonth, dayOfMonth) &&
-           this.fieldMatches(schedule.month, month) &&
-           this.fieldMatches(schedule.dayOfWeek, dayOfWeek);
-  }
-
-  private fieldMatches(fieldValue: string, actualValue: number): boolean {
-    if (fieldValue === '*') return true;
-    const values = fieldValue.split(',').map(v => parseInt(v.trim(), 10));
-    return values.includes(actualValue);
-  }
-
+  /**
+   * TODO (Interview Task 1): Implement cron expression parsing
+   *
+   * Requirements:
+   * - Accepts a string with exactly 5 space-separated fields: minute hour dayOfMonth month dayOfWeek
+   * - Trims extra whitespace between fields
+   * - Returns a Schedule object when valid; otherwise returns null
+   * - return null for invalid input
+   *
+   * Examples:
+   * - '0,15,30,45 * * * *' -> { minute: '0,15,30,45', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' }
+   * - '0 9,17 * * 1,5'     -> { minute: '0', hour: '9,17', dayOfMonth: '*', month: '*', dayOfWeek: '1,5' }
+   */
   parseCronExpression(expression: string): Schedule | null {
-    const parts = expression.trim().split(/\s+/);
-    if (parts.length !== 5) {
-      return null;
-    }
-
-    return {
-      minute: parts[0],
-      hour: parts[1],
-      dayOfMonth: parts[2],
-      month: parts[3],
-      dayOfWeek: parts[4]
-    };
+    // IMPLEMENTATION REQUIRED BY CANDIDATE
+    // Placeholder return to keep app compiling. Replace with a real implementation.
+    return null;
   }
 
   formatCronExpression(schedule: Schedule): string {
     return `${schedule.minute} ${schedule.hour} ${schedule.dayOfMonth} ${schedule.month} ${schedule.dayOfWeek}`;
   }
 
+  /**
+   * TODO (Interview Task 2): Implement human-readable description generation
+   *
+   * Requirements:
+   * - Translate non-'*' fields into a readable phrase, joining multiple values with ', '
+   * - minute -> "at minute(s) X"
+   * - hour -> "at hour(s) X"
+   * - dayOfMonth -> "on day(s) X of the month"
+   * - month -> map 1..12 to month names and output "in Jan/February/..."
+   * - dayOfWeek -> map 0..6 to Sunday..Saturday and output "on <days>"
+   * - If all are '*', return: 'Every minute of every hour, every day'
+   */
   getHumanReadableDescription(schedule: Schedule): string {
-    const parts: string[] = [];
+    // IMPLEMENTATION REQUIRED BY CANDIDATE
+    // Placeholder return to keep app compiling. Replace with a real implementation.
+    return '';
+  }
 
-    if (schedule.minute !== '*') {
-      const minutes = schedule.minute.split(',').map(m => m.trim());
-      parts.push(`at minute${minutes.length > 1 ? 's' : ''} ${minutes.join(', ')}`);
-    }
-
-    if (schedule.hour !== '*') {
-      const hours = schedule.hour.split(',').map(h => h.trim());
-      parts.push(`at hour${hours.length > 1 ? 's' : ''} ${hours.join(', ')}`);
-    }
-
-    if (schedule.dayOfMonth !== '*') {
-      const days = schedule.dayOfMonth.split(',').map(d => d.trim());
-      parts.push(`on day${days.length > 1 ? 's' : ''} ${days.join(', ')} of the month`);
-    }
-
-    if (schedule.month !== '*') {
-      const months = schedule.month.split(',').map(m => m.trim());
-      const monthNames = months.map(m => {
-        const monthNum = parseInt(m, 10);
-        const date = new Date(2000, monthNum - 1, 1);
-        return date.toLocaleDateString('en-US', { month: 'long' });
-      });
-      parts.push(`in ${monthNames.join(', ')}`);
-    }
-
-    if (schedule.dayOfWeek !== '*') {
-      const weekdays = schedule.dayOfWeek.split(',').map(w => w.trim());
-      const weekdayNames = weekdays.map(w => {
-        const weekdayNum = parseInt(w, 10);
-        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        return weekdays[weekdayNum];
-      });
-      parts.push(`on ${weekdayNames.join(', ')}`);
-    }
-
-    if (parts.length === 0) {
-      return 'Every minute of every hour, every day';
-    }
-
-    return parts.join(', ');
+  /**
+   * TODO (Interview Task 3): Normalize schedule values
+   *
+   * Requirements:
+   * - For each non-'*' field, split by comma, trim, parse to integers
+   * - Remove duplicates, sort ascending, and re-join with commas
+   * - Drop values outside allowed ranges (use SCHEDULE_FIELDS for bounds)
+   * - Return the normalized schedule object
+   */
+  normalizeSchedule(schedule: Schedule): Schedule {
+    // IMPLEMENTATION REQUIRED BY CANDIDATE
+    // Placeholder: return input unchanged to keep app functional.
+    return schedule;
   }
 }

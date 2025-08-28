@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Schedule, ScheduleValidationResult, SchedulePreview } from '../models/schedule.model';
+import { Schedule, ScheduleValidationResult } from '../models/schedule.model';
 import { ScheduleService } from '../services/schedule.service';
 
 @Component({
@@ -11,81 +11,53 @@ import { ScheduleService } from '../services/schedule.service';
   templateUrl: './scheduler.component.html',
   styleUrls: ['./scheduler.component.scss']
 })
-export class SchedulerComponent implements OnInit {
-  scheduleForm: FormGroup;
+export class SchedulerComponent {
+  // TODO (Interview Task - Build Form): Define a FormGroup for the scheduler form
+  scheduleForm: any;
   validationResult: ScheduleValidationResult | null = null;
-  previews: SchedulePreview[] = [];
   cronExpression: string = '';
+  humanReadableDescription: string = '';
 
   constructor(
     private fb: FormBuilder,
     private scheduleService: ScheduleService
   ) {
-    this.scheduleForm = this.fb.group({
-      minute: ['*', Validators.required],
-      hour: ['*', Validators.required],
-      dayOfMonth: ['*', Validators.required],
-      month: ['*', Validators.required],
-      dayOfWeek: ['*', Validators.required]
-    });
-  }
-
-  ngOnInit(): void {
-    this.scheduleForm.valueChanges.subscribe(() => {
-      this.validateAndPreview();
-    });
+    // TODO (Interview Task - Build Form): Define a FormGroup for the scheduler form with validators
+    // - Each control should allow '*' or comma-separated integers. '*' will be default value
+    // - Add Validators for each field
+    // - Controls: minute (0-59), hour (0-23), dayOfMonth (1-31), month (1-12), dayOfWeek (0-6)
   }
 
   validateAndPreview(): void {
-    const schedule = this.scheduleForm.value;
-    this.validationResult = this.scheduleService.validateSchedule(schedule);
-    
+    let schedule = this.scheduleForm.value;
+    // TODO (Interview Task 3): After implementing service methods, wire up additional UI updates here if needed.
+    // Currently this calls validation only. Keep this as-is unless tests instruct otherwise.
+    // TODO (Interview Task 3): Normalize schedule prior to validation using ScheduleService.normalizeSchedule
+    schedule = this.scheduleService.normalizeSchedule(schedule as any);
+    this.validationResult = this.scheduleService.validateSchedule(schedule as any);
+
+    // TODO (Interview Task 4): Generate cron expression and description using the service.
+    // Replace the placeholder logic below after completing Task 1 & 2 in ScheduleService.
     if (this.validationResult.isValid) {
-      this.previews = this.scheduleService.generatePreview(schedule);
-      this.cronExpression = this.scheduleService.formatCronExpression(schedule);
+      // Placeholder until candidate implements getHumanReadableDescription
+      this.cronExpression = this.scheduleService.formatCronExpression(schedule as any);
+      this.humanReadableDescription = this.scheduleService.getHumanReadableDescription(schedule as any);
     } else {
-      this.previews = [];
       this.cronExpression = '';
+      this.humanReadableDescription = '';
     }
   }
 
-  exportSchedule(): void {
-    const schedule = this.scheduleForm.value;
-    const dataStr = JSON.stringify(schedule, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = 'schedule.json';
-    link.click();
+
+
+  submitSchedule(): void {
+    this.validateAndPreview();
   }
 
-  importSchedule(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        try {
-          const schedule = JSON.parse(e.target.result);
-          this.scheduleForm.patchValue(schedule);
-        } catch (error) {
-          console.error('Error parsing schedule file:', error);
-        }
-      };
-      reader.readAsText(file);
-    }
-  }
-
+  // TODO (Interview Task - Build Form Reset): Implement a reset method that resets the form to '*'
   resetForm(): void {
-    this.scheduleForm.reset({
-      minute: '*',
-      hour: '*',
-      dayOfMonth: '*',
-      month: '*',
-      dayOfWeek: '*'
-    });
-    this.validationResult = null;
-    this.previews = [];
-    this.cronExpression = '';
+    // TODO: Candidate must implement reset using FormGroup.reset to:
+    // - Set all fields to '*'
+    // - Clear validationResult, cronExpression, and humanReadableDescription
   }
 }

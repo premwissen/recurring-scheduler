@@ -12,10 +12,7 @@ export interface ScheduleValidationResult {
   warnings: string[];
 }
 
-export interface SchedulePreview {
-  nextRun: Date;
-  expression: string;
-}
+
 
 export const SCHEDULE_FIELDS = {
   minute: { min: 0, max: 59, label: 'Minute' },

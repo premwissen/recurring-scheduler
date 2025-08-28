@@ -1,29 +1,26 @@
 <div class="scheduler-container">
   <h2>Schedule Builder</h2>
-  
-  <form [formGroup]="scheduleForm" class="schedule-form">
+
+  <div class="assignment-banner" data-test="assignment-banner">
+    <!-- Interview Task: Build the Reactive Form + validators, control section visibility, and implement reset. -->
+    <p><strong>Interview Task:</strong> Implement the Reactive Form (minute, hour, dayOfMonth, month, dayOfWeek) with validators, control visibility of the sections below based on validity, and implement Reset to set all fields to '*' and clear outputs.</p>
+  </div>
+
+  <!-- TODO (Interview Task - Build Form):
+       Create a reactive form with fields minute, hour, dayOfMonth, month, dayOfWeek.
+       Add Submit and Reset buttons. Use Angular Reactive Forms.
+       Validation: allow '*' or comma-separated integers in valid ranges. -->
+
+  <form class="schedule-form" aria-disabled="true">
     <div class="form-row">
       <div class="form-field">
         <label for="minute">Minute</label>
-        <input 
-          id="minute" 
-          type="text" 
-          formControlName="minute" 
-          placeholder="0,15,30,45 or *"
-          class="form-input"
-        >
+        <input id="minute" type="text" placeholder="0,15,30,45 or *" class="form-input">
         <small>Range: 0-59, use comma to separate multiple values</small>
       </div>
-      
       <div class="form-field">
         <label for="hour">Hour</label>
-        <input 
-          id="hour" 
-          type="text" 
-          formControlName="hour" 
-          placeholder="9,12,18 or *"
-          class="form-input"
-        >
+        <input id="hour" type="text" placeholder="9,12,18 or *" class="form-input">
         <small>Range: 0-23, use comma to separate multiple values</small>
       </div>
     </div>
@@ -31,25 +28,12 @@
     <div class="form-row">
       <div class="form-field">
         <label for="dayOfMonth">Day of Month</label>
-        <input 
-          id="dayOfMonth" 
-          type="text" 
-          formControlName="dayOfMonth" 
-          placeholder="1,15,31 or *"
-          class="form-input"
-        >
+        <input id="dayOfMonth" type="text" placeholder="1,15,31 or *" class="form-input">
         <small>Range: 1-31, use comma to separate multiple values</small>
       </div>
-      
       <div class="form-field">
         <label for="month">Month</label>
-        <input 
-          id="month" 
-          type="text" 
-          formControlName="month" 
-          placeholder="1,6,12 or *"
-          class="form-input"
-        >
+        <input id="month" type="text" placeholder="1,6,12 or *" class="form-input">
         <small>Range: 1-12, use comma to separate multiple values</small>
       </div>
     </div>
@@ -57,79 +41,58 @@
     <div class="form-row">
       <div class="form-field">
         <label for="dayOfWeek">Day of Week</label>
-        <input 
-          id="dayOfWeek" 
-          type="text" 
-          formControlName="dayOfWeek" 
-          placeholder="1,5 or *"
-          class="form-input"
-        >
+        <input id="dayOfWeek" type="text" placeholder="1,5 or *" class="form-input">
         <small>Range: 0-6 (Sunday=0), use comma to separate multiple values</small>
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="button" (click)="resetForm()" class="btn btn-secondary">Reset</button>
-      <button type="button" (click)="exportSchedule()" class="btn btn-primary">Export</button>
-      <label for="import-file" class="btn btn-primary">Import</label>
-      <input 
-        id="import-file" 
-        type="file" 
-        accept=".json" 
-        (change)="importSchedule($event)" 
-        style="display: none;"
-      >
+      <!-- TODO (Interview Task - Buttons): Enable Submit only when the Reactive Form is valid; Reset is always enabled. -->
+      <button type="button" class="btn btn-primary" data-test="submit-btn" [disabled]="!scheduleForm?.valid">Submit</button>
+      <button type="button" class="btn btn-secondary" data-test="reset-btn">Reset</button>
     </div>
   </form>
 
   <!-- Validation Results -->
-  <div class="validation-section" *ngIf="validationResult">
-    <div class="validation-status" [class.valid]="validationResult.isValid" [class.invalid]="!validationResult.isValid">
-      <span class="status-icon">{{ validationResult.isValid ? '✅' : '❌' }}</span>
+  <!-- TODO (Interview Task - Visibility): Only show this section when a validation result exists -->
+  <div class="validation-section" data-test="validation-section">
+    <div class="validation-status" [class.valid]="validationResult?.isValid" [class.invalid]="validationResult && !validationResult.isValid">
+      <span class="status-icon">{{ validationResult?.isValid ? '✅' : '❌' }}</span>
       <span class="status-text">
-        {{ validationResult.isValid ? 'Schedule is valid' : 'Schedule has errors' }}
+        {{ validationResult?.isValid ? 'Schedule is valid' : 'Schedule has errors' }}
       </span>
     </div>
 
-    <div class="validation-errors" *ngIf="validationResult.errors.length > 0">
+    <!-- TODO (Interview Task - Visibility): Only show errors list when there are errors -->
+    <div class="validation-errors" data-test="validation-errors">
       <h4>Errors:</h4>
       <ul>
-        <li *ngFor="let error of validationResult.errors">{{ error }}</li>
+        <li *ngFor="let error of (validationResult?.errors || [])">{{ error }}</li>
       </ul>
     </div>
 
-    <div class="validation-warnings" *ngIf="validationResult.warnings.length > 0">
+    <!-- TODO (Interview Task - Visibility): Only show warnings list when there are warnings -->
+    <div class="validation-warnings" data-test="validation-warnings">
       <h4>Warnings:</h4>
       <ul>
-        <li *ngFor="let warning of validationResult.warnings">{{ warning }}</li>
+        <li *ngFor="let warning of (validationResult?.warnings || [])">{{ warning }}</li>
       </ul>
     </div>
+  </div>
+
+  <!-- Human Readable Description -->
+  <!-- TODO (Interview Task - Visibility): Only show this when schedule is valid and description is non-empty -->
+  <div class="human-readable" data-test="human-readable">
+    <h4>Schedule Description:</h4>
+    <p class="description-text">{{ humanReadableDescription }}</p>
+    <!-- TODO (Interview Task 2): This text should be generated by ScheduleService.getHumanReadableDescription -->
   </div>
 
   <!-- Cron Expression -->
-  <div class="cron-expression" *ngIf="cronExpression">
+  <!-- TODO (Interview Task - Visibility): Only show this when schedule is valid -->
+  <div class="cron-expression" data-test="cron-expression">
     <h4>Generated Cron Expression:</h4>
     <code class="cron-code">{{ cronExpression }}</code>
-  </div>
-
-  <!-- Schedule Preview -->
-  <div class="preview-section" *ngIf="previews.length > 0">
-    <h4>Upcoming Run Times:</h4>
-    <table class="preview-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Next Run</th>
-          <th>Expression</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let preview of previews; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ preview.nextRun | date:'medium' }}</td>
-          <td><code>{{ preview.expression }}</code></td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- TODO (Interview Task 4): Ensure ScheduleService.formatCronExpression is used to generate this cron string -->
   </div>
 </div>

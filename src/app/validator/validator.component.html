@@ -1,22 +1,32 @@
+<!-- TODO (Interview Task 5): Build a minimal UI to paste a cron string and preview validation/description.
+     The logic is already present in the component. You may enhance UX but keep it simple. -->
 <div class="validator-container">
   <h2>Schedule Validator</h2>
-  
-  <form [formGroup]="validatorForm" class="validator-form">
+
+  <div class="assignment-banner" data-test="assignment-banner">
+    <!-- Interview Task: Build the Reactive Form, wire parse/validate/describe, and control visibility. -->
+    <p><strong>Interview Task:</strong> Implement the Reactive Form with 'cronExpression', wire parse/validate/describe using the service, and show/hide sections based on validity.</p>
+  </div>
+
+  <!-- TODO (Interview Task - Build Form):
+       Build a form with a single text input bound to 'cronExpression' using Angular Reactive Forms.
+       Add validation: required, pattern to allow digits, spaces, commas, and '*'. -->
+  <form class="validator-form" aria-disabled="true">
     <div class="form-field">
       <label for="cronExpression">Cron Expression</label>
-      <input 
-        id="cronExpression" 
-        type="text" 
-        formControlName="cronExpression" 
-        placeholder="0,15,30,45 * * * *"
-        class="form-input"
-      >
+      <input id="cronExpression" type="text" placeholder="0,15,30,45 * * * *" class="form-input">
       <small>Enter a cron expression with 5 fields: Minute Hour Day Month DayOfWeek</small>
+    </div>
+    <div class="form-actions">
+      <!-- TODO (Interview Task - Buttons): Enable Validate only when the Reactive Form control is valid; Reset always enabled. -->
+      <button type="button" class="btn btn-primary" data-test="validate-btn" [disabled]="!validatorForm?.valid">Validate</button>
+      <button type="button" class="btn btn-secondary" data-test="reset-btn">Reset</button>
     </div>
   </form>
 
   <!-- Validation Results -->
-  <div class="validation-results" *ngIf="validationResult">
+  <!-- TODO (Interview Task - Visibility): Only show this section when a validation result exists -->
+  <div class="validation-results" data-test="validation-results">
     <div class="validation-status" [class.valid]="isValid" [class.invalid]="!isValid">
       <span class="status-icon">{{ isValid ? '✅' : '❌' }}</span>
       <span class="status-text">
@@ -25,45 +35,34 @@
     </div>
 
     <!-- Human Readable Description -->
-    <div class="human-readable" *ngIf="isValid && humanReadableDescription">
+    <!-- TODO (Interview Task - Visibility): Only show description when valid and non-empty -->
+    <div class="human-readable" data-test="human-readable">
       <h4>Schedule Description:</h4>
       <p class="description-text">{{ humanReadableDescription }}</p>
     </div>
 
     <!-- Error Details -->
-    <div class="error-details" *ngIf="!isValid">
-      <div class="validation-errors" *ngIf="validationResult.errors && validationResult.errors.length > 0">
+    <div class="error-details">
+      <!-- TODO (Interview Task - Visibility): Only show errors when present -->
+      <div class="validation-errors" data-test="validation-errors">
         <h4>Errors:</h4>
         <ul>
           <li *ngFor="let error of validationResult.errors">{{ error }}</li>
         </ul>
       </div>
 
-      <div class="validation-warnings" *ngIf="validationResult.warnings && validationResult.warnings.length > 0">
+      <!-- TODO (Interview Task - Visibility): Only show warnings when present -->
+      <div class="validation-warnings" data-test="validation-warnings">
         <h4>Warnings:</h4>
         <ul>
           <li *ngFor="let warning of validationResult.warnings">{{ warning }}</li>
         </ul>
       </div>
 
-      <div class="format-error" *ngIf="validationResult.error">
+      <!-- TODO (Interview Task - Visibility): Only show format error when present -->
+      <div class="format-error" data-test="format-error">
         <h4>Format Error:</h4>
         <p>{{ validationResult.error }}</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Examples -->
-  <div class="examples-section">
-    <h4>Example Expressions:</h4>
-    <div class="examples-list">
-      <div 
-        class="example-item" 
-        *ngFor="let example of getExamples()"
-        (click)="validatorForm.patchValue({cronExpression: example})"
-      >
-        <code>{{ example }}</code>
-        <small>Click to try</small>
       </div>
     </div>
   </div>

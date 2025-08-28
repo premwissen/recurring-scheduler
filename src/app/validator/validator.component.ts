@@ -12,7 +12,8 @@ import { ScheduleService } from '../services/schedule.service';
   styleUrls: ['./validator.component.scss']
 })
 export class ValidatorComponent {
-  validatorForm: FormGroup;
+  // TODO (Interview Task - Build Form): Define a FormGroup with a single control 'cronExpression'
+  validatorForm: any;
   validationResult: any = null;
   humanReadableDescription: string = '';
   isValid: boolean = false;
@@ -21,64 +22,39 @@ export class ValidatorComponent {
     private fb: FormBuilder,
     private scheduleService: ScheduleService
   ) {
-    this.validatorForm = this.fb.group({
-      cronExpression: ['', [Validators.required, Validators.pattern(/^[\d\s,*]+$/)]]
-    });
-
-    this.validatorForm.valueChanges.subscribe(() => {
-      this.validateExpression();
-    });
+    // TODO (Interview Task - Build Form): Initialize the form and subscribe to value changes
+    // @ts-ignore
   }
 
   validateExpression(): void {
     const expression = this.validatorForm.get('cronExpression')?.value;
     
+    // Keep this method thin and delegate main logic to a helper implemented by the candidate
     if (!expression || !this.validatorForm.valid) {
-      this.validationResult = null;
-      this.humanReadableDescription = '';
-      this.isValid = false;
+      this.clearOutputs();
       return;
     }
 
-    const schedule = this.scheduleService.parseCronExpression(expression);
-    
-    if (!schedule) {
-      this.validationResult = {
-        isValid: false,
-        error: 'Invalid cron expression format. Must have exactly 5 fields separated by spaces.'
-      };
-      this.humanReadableDescription = '';
-      this.isValid = false;
-      return;
-    }
-
-    const validation = this.scheduleService.validateSchedule(schedule);
-    
-    if (validation.isValid) {
-      this.isValid = true;
-      this.humanReadableDescription = this.scheduleService.getHumanReadableDescription(schedule);
-      this.validationResult = {
-        isValid: true,
-        schedule: schedule
-      };
-    } else {
-      this.isValid = false;
-      this.humanReadableDescription = '';
-      this.validationResult = {
-        isValid: false,
-        errors: validation.errors,
-        warnings: validation.warnings
-      };
-    }
+    // TODO (Interview Task - Implement): Implement updateStateFromExpression to:
+    // - parse via ScheduleService.parseCronExpression
+    // - if null => set invalid format error on validationResult, clear description and isValid=false
+    // - if parsed => validate via ScheduleService.validateSchedule
+    //   - when valid => set isValid=true, set humanReadableDescription via getHumanReadableDescription, set validationResult
+    //   - when invalid => set isValid=false, set validationResult with errors/warnings, clear description
+    this.updateStateFromExpression(expression);
   }
 
-  getExamples(): string[] {
-    return [
-      '0,15,30,45 * * * *',
-      '0 9,17 * * 1,5',
-      '30 12 1,15 * *',
-      '0 0 1 1,7 *',
-      '* * * * *'
-    ];
+  // TODO (Interview Task - Implement): Write this helper to encapsulate the core logic described above.
+  // This method should be unit-testable independently.
+  protected updateStateFromExpression(_expression: string): void {
+    // Placeholder: Candidate to implement. Keep component methods small and readable.
   }
+
+  // Utility to clear current outputs
+  protected clearOutputs(): void {
+    this.validationResult = null;
+    this.humanReadableDescription = '';
+    this.isValid = false;
+  }
+
 }
